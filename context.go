@@ -1,6 +1,7 @@
 package echo
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 	"io"
 	"io/ioutil"
@@ -193,4 +194,24 @@ func (c *Context) Scheme() string {
 
 func (c *Context) MultipartForm() (*multipart.Form, error) {
 	return c.Ctx.MultipartForm()
+}
+
+func (c *Context) IP() string {
+	return c.Ctx.RealIP()
+}
+
+func (c *Context) Context() context.Context {
+	return c.Ctx.Request().Context()
+}
+
+func (c *Context) Method() string {
+	return c.Ctx.Request().Method
+}
+
+func (c *Context) HttpRequest() *http.Request {
+	return c.Ctx.Request()
+}
+
+func (c *Context) Request() interface{} {
+	return c.Ctx.Request()
 }
