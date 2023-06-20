@@ -15,6 +15,12 @@ type Context struct {
 	ctx echo.Context
 }
 
+func IContext(ctx echo.Context) Context {
+	return Context{
+		ctx: ctx,
+	}
+}
+
 func (c *Context) Render(name string, data interface{}, layouts ...string) error {
 	return c.ctx.Render(200, name, data)
 }
