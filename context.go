@@ -12,15 +12,15 @@ import (
 )
 
 type Context struct {
-	Ctx echo.Context
+	ctx echo.Context
 }
 
 func (c *Context) Render(name string, data interface{}, layouts ...string) error {
-	return c.Ctx.Render(200, name, data)
+	return c.ctx.Render(200, name, data)
 }
 
 func (c *Context) Params(key string, defaultValue ...string) string {
-	value := c.Ctx.Param(key)
+	value := c.ctx.Param(key)
 	if value == "" && defaultValue != nil {
 		return defaultValue[0]
 	}
@@ -28,7 +28,7 @@ func (c *Context) Params(key string, defaultValue ...string) string {
 }
 
 func (c *Context) Get(key string, defaultValue ...string) string {
-	value := c.Ctx.Request().Header.Get(key)
+	value := c.ctx.Request().Header.Get(key)
 	if value == "" && defaultValue != nil {
 		return defaultValue[0]
 	}
@@ -36,15 +36,15 @@ func (c *Context) Get(key string, defaultValue ...string) string {
 }
 
 func (c *Context) Set(key, value string) {
-	c.Ctx.Request().Header.Set(key, value)
+	c.ctx.Request().Header.Set(key, value)
 }
 
 func (c *Context) SendStatus(code int) error {
-	return c.Ctx.NoContent(code)
+	return c.ctx.NoContent(code)
 }
 
 func (c *Context) Cookies(key string) string {
-	for _, cookie := range c.Ctx.Cookies() {
+	for _, cookie := range c.ctx.Cookies() {
 		if cookie.Name == key {
 			return cookie.Value
 		}
@@ -53,12 +53,12 @@ func (c *Context) Cookies(key string) string {
 }
 
 func (c *Context) SetCookie(cookie *http.Cookie) {
-	c.Ctx.SetCookie(cookie)
+	c.ctx.SetCookie(cookie)
 }
 
 // TODO ClearCookie
 func (c *Context) ClearCookie(key string) {
-	for _, cookie := range c.Ctx.Cookies() {
+	for _, cookie := range c.ctx.Cookies() {
 		if cookie.Name == key {
 
 		}
@@ -66,23 +66,23 @@ func (c *Context) ClearCookie(key string) {
 }
 
 func (c *Context) Redirect(location string, status int) error {
-	return c.Ctx.Redirect(status, location)
+	return c.ctx.Redirect(status, location)
 }
 
 func (c *Context) Path() string {
-	return c.Ctx.Path()
+	return c.ctx.Path()
 }
 
 func (c *Context) SendString(code int, s string) error {
-	return c.Ctx.String(code, s)
+	return c.ctx.String(code, s)
 }
 
 func (c *Context) Send(code int, contentType string, b []byte) error {
-	return c.Ctx.Blob(code, contentType, b)
+	return c.ctx.Blob(code, contentType, b)
 }
 
 func (c *Context) SendFile(file string) error {
-	return c.Ctx.File(file)
+	return c.ctx.File(file)
 }
 
 func (c *Context) SaveFile(fh *multipart.FileHeader, path string) (err error) {
@@ -135,26 +135,26 @@ func (c *Context) SaveFile(fh *multipart.FileHeader, path string) (err error) {
 }
 
 func (c *Context) SendStream(code int, contentType string, stream io.Reader) error {
-	return c.Ctx.Stream(code, contentType, stream)
+	return c.ctx.Stream(code, contentType, stream)
 }
 
 func (c *Context) JSON(code int, data interface{}) error {
-	return c.Ctx.JSON(code, data)
+	return c.ctx.JSON(code, data)
 }
 
 func (c *Context) Body() []byte {
-	body := c.Ctx.Request().Body
+	body := c.ctx.Request().Body
 	b, _ := ioutil.ReadAll(body)
 	defer body.Close()
 	return b
 }
 
 func (c *Context) BodyParser(out interface{}) error {
-	return c.Ctx.Bind(out)
+	return c.ctx.Bind(out)
 }
 
 func (c *Context) QueryParam(name string, defaultValue ...string) string {
-	value := c.Ctx.QueryParam(name)
+	value := c.ctx.QueryParam(name)
 	if value == "" && defaultValue != nil {
 		return defaultValue[0]
 	}
@@ -162,11 +162,11 @@ func (c *Context) QueryParam(name string, defaultValue ...string) string {
 }
 
 func (c *Context) QueryValues() url.Values {
-	return c.Ctx.QueryParams()
+	return c.ctx.QueryParams()
 }
 
 func (c *Context) QueryParams(h func(key, value string)) {
-	for k, v := range c.Ctx.QueryParams() {
+	for k, v := range c.ctx.QueryParams() {
 		s := ""
 		if len(v) > 0 {
 			s = v[0]
@@ -176,42 +176,46 @@ func (c *Context) QueryParams(h func(key, value string)) {
 }
 
 func (c *Context) Hostname() string {
-	c.Ctx.Request()
-	return c.Ctx.Request().Host
+	c.ctx.Request()
+	return c.ctx.Request().Host
 }
 
 func (c *Context) FormValue(name string) string {
-	return c.Ctx.FormValue(name)
+	return c.ctx.FormValue(name)
 }
 
 func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
-	return c.Ctx.FormFile(name)
+	return c.ctx.FormFile(name)
 }
 
 func (c *Context) Scheme() string {
-	return c.Ctx.Scheme()
+	return c.ctx.Scheme()
 }
 
 func (c *Context) MultipartForm() (*multipart.Form, error) {
-	return c.Ctx.MultipartForm()
+	return c.ctx.MultipartForm()
 }
 
 func (c *Context) IP() string {
-	return c.Ctx.RealIP()
+	return c.ctx.RealIP()
 }
 
 func (c *Context) Context() context.Context {
-	return c.Ctx.Request().Context()
+	return c.ctx.Request().Context()
+}
+
+func (c *Context) Ctx() interface{} {
+	return c.ctx
 }
 
 func (c *Context) Method() string {
-	return c.Ctx.Request().Method
+	return c.ctx.Request().Method
 }
 
 func (c *Context) HttpRequest() *http.Request {
-	return c.Ctx.Request()
+	return c.ctx.Request()
 }
 
 func (c *Context) Request() interface{} {
-	return c.Ctx.Request()
+	return c.ctx.Request()
 }
